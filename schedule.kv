@@ -1,0 +1,156 @@
+# schedule.kv
+
+#:kivy 2.1.0
+
+# Правила для базовых виджетов - стиль по умолчанию для всего приложения
+<Label>:
+    font_name: 'Montserrat'
+    color: app.palette['text_dark_rgba']
+    font_size: '15sp'
+
+<Button>:
+    font_name: 'Montserrat'
+    bold: True
+    background_normal: ''
+    background_down: ''
+    color: app.palette['text_light_rgba']
+    background_color: app.palette['primary_dark_rgba'] if self.state == 'down' else app.palette['primary_rgba']
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [self.height / 2]
+
+<TextInput>:
+    font_name: 'Montserrat'
+    background_color: app.palette['secondary_rgba']
+    foreground_color: app.palette['text_dark_rgba']
+    hint_text_color: app.palette['hint_rgba']
+    padding: [8, 15, 8, 12]
+    cursor_color: app.palette['primary_rgba']
+    font_size: '14sp'
+
+# Правила для кастомных виджетов
+
+<ScheduleRow>:
+    checkbox: checkbox_id
+    label: label_id
+    size_hint_y: None
+    height: 40
+    CheckBox:
+        id: checkbox_id
+        size_hint_x: 0.1
+    Label:
+        id: label_id
+        text: ''
+
+<MainLayout>:
+    # Связываем id из kv с ObjectProperty в Python
+    start_date_input: start_date
+    end_date_input: end_date
+    time_slots_layout: time_slots
+    schedule_list_layout: schedule_list
+
+    orientation: 'vertical'
+    padding: 20
+    spacing: 15
+
+    BoxLayout:
+        size_hint_y: None
+        height: 280
+        orientation: 'vertical'
+        spacing: 10
+
+        GridLayout:
+            cols: 1
+            size_hint_y: None
+            height: 130
+            spacing: 5
+
+            Label:
+                text: 'Начальная дата:'
+                halign: 'left'
+                valign: 'middle' # Для лучшего выравнивания
+                text_size: self.size # Для переноса текста, если нужно
+                size_hint_y: None
+                height: 20
+            TextInput:
+                id: start_date
+                hint_text: 'ГГГГ-ММ-ДД'
+                multiline: False
+                size_hint_y: None
+                height: 45
+
+            Label:
+                text: 'Конечная дата:'
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+                size_hint_y: None
+                height: 20
+            TextInput:
+                id: end_date
+                hint_text: 'ГГГГ-ММ-ДД'
+                multiline: False
+                size_hint_y: None
+                height: 45
+
+        Label:
+            text: 'Доступное время:'
+            size_hint_y: None
+            height: 20
+            font_size: '16sp'
+            bold: True
+
+        BoxLayout:
+            id: time_slots
+            size_hint_y: None
+            height: 45
+            spacing: 10
+            TextInput:
+                id: first_time_slot
+                text: '13:00'
+                multiline: False
+                on_text: root.update_time_for_selected(self)
+
+        BoxLayout:
+            size_hint_y: None
+            height: 45
+            spacing: 10
+            Button:
+                text: '+'
+                on_press: root.add_time_slot()
+            Button:
+                text: '-'
+                on_press: root.remove_time_slot()
+
+    Button:
+        text: 'Сформировать график'
+        size_hint_y: None
+        height: 50
+        on_press: root.generate_schedule()
+
+    BoxLayout:
+        size_hint_y: None
+        height: 30
+        CheckBox:
+            size_hint_x: 0.1
+            on_active: root.select_all_rows(self.active)
+        Label:
+            text: 'Выделить все'
+
+    ScrollView:
+        bar_width: 5
+        GridLayout:
+            id: schedule_list
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+
+    Button:
+        text: 'Скопировать'
+        size_hint_y: None
+        height: 50
+        on_press: root.copy_to_clipboard()
