@@ -39,9 +39,19 @@
     label: label_id
     size_hint_y: None
     height: 40
+    padding: [0, 0, 10, 0]
+
     CheckBox:
         id: checkbox_id
         size_hint_x: 0.1
+        canvas.before:
+            Color:
+                # ИЗМЕНЕНИЕ: меняем цвет обводки на основной розовый
+                rgba: app.palette['primary_rgba']
+            Line:
+                rounded_rectangle: [self.center_x - 12, self.center_y - 12, 24, 24, 3]
+                width: 1.2
+
     Label:
         id: label_id
         text: ''
@@ -138,6 +148,14 @@
         CheckBox:
             size_hint_x: 0.1
             on_active: root.select_all_rows(self.active)
+            # --- ДОБАВЛЕННЫЙ БЛОК ДЛЯ ОБВОДКИ ---
+            canvas.before:
+                Color:
+                    rgba: app.palette['primary_rgba']
+                Line:
+                    rounded_rectangle: [self.center_x - 12, self.center_y - 12, 24, 24, 3]
+                    width: 1.2
+            # ------------------------------------
         Label:
             text: 'Выделить все'
 

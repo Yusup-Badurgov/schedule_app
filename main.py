@@ -34,9 +34,9 @@ PALETTE = {
     "secondary": "#FFE6E6",
     "text_dark": "#3D3B40",
     "text_light": "#FFFFFF",
-    "hint": "#A0A0A0"
+    "hint": "#A0A0A0",
+    "border": "#E0E0E0"  # <--- ДОБАВЬТЕ ЭТУ СТРОКУ
 }
-
 # --- КЛАССЫ ВИДЖЕТОВ (ЛОГИКА) ---
 
 class ScheduleRow(BoxLayout):
